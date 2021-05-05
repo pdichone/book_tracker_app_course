@@ -1,4 +1,6 @@
+import 'package:book_tracker/screens/main_screen.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 class LoginForm extends StatelessWidget {
@@ -47,6 +49,7 @@ class LoginForm extends StatelessWidget {
           height: 20,
         ),
         TextButton(
+            child: Text('Sign In'),
             style: TextButton.styleFrom(
                 primary: Colors.white,
                 padding: EdgeInsets.all(15),
@@ -55,9 +58,19 @@ class LoginForm extends StatelessWidget {
                 backgroundColor: Colors.amber,
                 textStyle: TextStyle(fontSize: 18)),
             onPressed: () {
-              if (_formKey.currentState.validate()) {}
-            },
-            child: Text('Sign In'))
+              if (_formKey.currentState.validate()) {
+                FirebaseAuth.instance
+                    .signInWithEmailAndPassword(
+                        email: _emailTextController.text,
+                        password: _passwordTextController.text)
+                    .then((value) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MainScreenPage()));
+                });
+              }
+            })
       ]),
     );
   }
