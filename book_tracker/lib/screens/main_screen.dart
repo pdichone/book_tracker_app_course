@@ -1,3 +1,4 @@
+import 'package:book_tracker/model/book.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -26,10 +27,13 @@ class MainScreenPage extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   );
                 }
-                Map<String, dynamic> data = snapshot.data.docs.first.data();
+                final bookListStream = snapshot.data.docs.map((book) {
+                  return Book.fromMap(book.data());
+                }).toList();
+                //Map<String, dynamic> data = snapshot.data.docs.first.data();
+                Book book = bookListStream[0];
 
-                return Text(data['author'],
-                    style: TextStyle(color: Colors.black));
+                return Text(book.author, style: TextStyle(color: Colors.black));
               },
             )
           ],
