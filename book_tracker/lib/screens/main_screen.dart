@@ -1,4 +1,6 @@
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/model/user.dart';
+import 'package:book_tracker/screens/login_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +33,12 @@ class MainScreenPage extends StatelessWidget {
                   child: CircularProgressIndicator(),
                 );
               }
+              final userListStream = snapshot.data.docs.map((user) {
+                return MUser.fromDocument(user);
+              }).where((user) {
+                return (user.uid == FirebaseAuth.instance.currentUser.uid);
+              }).toList(); //[user]
+              MUser curUser = userListStream[0];
 
               return Column(
                 children: [
@@ -46,7 +54,7 @@ class MainScreenPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    'UserName',
+                    '${curUser.displayName}',
                     style: TextStyle(color: Colors.black12),
                   )
                 ],
@@ -54,7 +62,17 @@ class MainScreenPage extends StatelessWidget {
             },
           ),
           TextButton.icon(
-              onPressed: () {}, icon: Icon(Icons.logout), label: Text(''))
+              onPressed: () {
+                FirebaseAuth.instance.signOut().then((value) {
+                  return Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => LoginPage(),
+                      ));
+                });
+              },
+              icon: Icon(Icons.logout),
+              label: Text(''))
         ],
       ),
     );
