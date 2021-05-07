@@ -1,5 +1,7 @@
 import 'package:book_tracker/screens/main_screen.dart';
+import 'package:book_tracker/services/create_user.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -60,23 +62,28 @@ class CreateAccountForm extends StatelessWidget {
                 textStyle: TextStyle(fontSize: 18)),
             onPressed: () {
               if (_formKey.currentState.validate()) {
+                String email = _emailTextController.text;
+                //john@me.com ['john', 'me.com']
                 FirebaseAuth.instance
                     .createUserWithEmailAndPassword(
-                        email: _emailTextController.text,
-                        password: _passwordTextController.text)
+                        email: email, password: _passwordTextController.text)
                     .then((value) {
-                  // print(value.user.email);
-                  FirebaseAuth.instance
-                      .signInWithEmailAndPassword(
-                          email: _emailTextController.text,
-                          password: _passwordTextController.text)
-                      .then((value) {
-                    return Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MainScreenPage(),
-                        ));
-                  });
+                  if (value.user != null) {
+                    String displayName = email.toString().split('@')[0];
+                    createUser(displayName, context).then((value) {
+                      FirebaseAuth.instance
+                          .signInWithEmailAndPassword(
+                              email: _emailTextController.text,
+                              password: _passwordTextController.text)
+                          .then((value) {
+                        return Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MainScreenPage(),
+                            ));
+                      });
+                    });
+                  }
                 });
               }
             },

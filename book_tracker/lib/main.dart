@@ -14,21 +14,21 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    var userStream = FirebaseAuth.instance.authStateChanges();
+    User firebaseUser = FirebaseAuth.instance.currentUser;
+    Widget widget;
+    if (firebaseUser != null) {
+      print(firebaseUser.email);
+      widget = MainScreenPage();
+    } else {
+      widget = LoginPage();
+    }
+
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'BookTracker',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: StreamBuilder<User>(
-        stream: userStream,
-        builder: (context, snapshot) {
-          final userSignedIn = snapshot.data != null;
-          return userSignedIn ? MainScreenPage() : LoginPage();
-        },
-        //child: GetStartedPage()
-      ),
-    );
+        debugShowCheckedModeBanner: false,
+        title: 'BookTracker',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: widget);
   }
 }
