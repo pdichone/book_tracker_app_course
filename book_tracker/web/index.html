@@ -63,6 +63,15 @@
   // Initialize Firebase
   firebase.initializeApp(firebaseConfig);
 </script>
+
+<script type="text/javascript">
+  let useHtml = true;
+  if(useHtml) {
+    window.flutterWebRenderer = "html";
+  } else {
+    window.flutterWebRenderer = "canvaskit";
+  }
+</script>
   <script src="main.dart.js" type="application/javascript"></script>
 </body>
 </html>

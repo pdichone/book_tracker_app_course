@@ -47,8 +47,9 @@ class MainScreenPage extends StatelessWidget {
                     width: 40,
                     child: CircleAvatar(
                       radius: 60,
-                      backgroundImage:
-                          NetworkImage('https://picsum.photos/id/1/200/300'),
+                      backgroundImage: NetworkImage(curUser.avatarUrl != null
+                          ? curUser.avatarUrl
+                          : 'https://i.pravatar.cc/300'),
                       backgroundColor: Colors.white,
                       child: Text(''),
                     ),
