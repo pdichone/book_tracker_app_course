@@ -17,7 +17,6 @@ class MyApp extends StatelessWidget {
     User firebaseUser = FirebaseAuth.instance.currentUser;
     Widget widget;
     if (firebaseUser != null) {
-      print(firebaseUser.email);
       widget = MainScreenPage();
     } else {
       widget = LoginPage();

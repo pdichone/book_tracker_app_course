@@ -1,19 +1,30 @@
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/screens/login_page.dart';
+import 'package:book_tracker/widgets/create_profile.dart';
+import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 
 class MainScreenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    // final TextEditingController _displayNameTextController =
+    //     TextEditingController();
+    // final TextEditingController _profesionTextController =
+    //     TextEditingController();
+
+    // final TextEditingController _quoteTextController = TextEditingController();
+    // final TextEditingController _avatarTextController = TextEditingController();
     CollectionReference userCollectionReference =
         FirebaseFirestore.instance.collection('users');
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white24,
         elevation: 0.0,
+        toolbarHeight: 77,
         centerTitle: false,
         title: Row(
           children: [
@@ -36,6 +47,7 @@ class MainScreenPage extends StatelessWidget {
               final userListStream = snapshot.data.docs.map((user) {
                 return MUser.fromDocument(user);
               }).where((user) {
+                print(user.displayName);
                 return (user.uid == FirebaseAuth.instance.currentUser.uid);
               }).toList(); //[user]
               MUser curUser = userListStream[0];
@@ -45,13 +57,23 @@ class MainScreenPage extends StatelessWidget {
                   SizedBox(
                     height: 40,
                     width: 40,
-                    child: CircleAvatar(
-                      radius: 60,
-                      backgroundImage: NetworkImage(curUser.avatarUrl != null
-                          ? curUser.avatarUrl
-                          : 'https://i.pravatar.cc/300'),
-                      backgroundColor: Colors.white,
-                      child: Text(''),
+                    child: InkWell(
+                      child: CircleAvatar(
+                        radius: 60,
+                        backgroundImage: NetworkImage(curUser.avatarUrl != null
+                            ? curUser.avatarUrl
+                            : 'https://i.pravatar.cc/300'),
+                        backgroundColor: Colors.white,
+                        child: Text(''),
+                      ),
+                      onTap: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) {
+                            return createProfileDialog(context, curUser);
+                          },
+                        );
+                      },
                     ),
                   ),
                   Text(
