@@ -1,7 +1,10 @@
+import 'dart:html';
+
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/screens/login_page.dart';
 import 'package:book_tracker/widgets/create_profile.dart';
+import 'package:book_tracker/widgets/create_profile_mobile.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,13 +14,6 @@ import 'package:hexcolor/hexcolor.dart';
 class MainScreenPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final TextEditingController _displayNameTextController =
-    //     TextEditingController();
-    // final TextEditingController _profesionTextController =
-    //     TextEditingController();
-
-    // final TextEditingController _quoteTextController = TextEditingController();
-    // final TextEditingController _avatarTextController = TextEditingController();
     CollectionReference userCollectionReference =
         FirebaseFirestore.instance.collection('users');
     return Scaffold(
@@ -38,18 +34,21 @@ class MainScreenPage extends StatelessWidget {
         actions: [
           StreamBuilder<QuerySnapshot>(
             stream: userCollectionReference.snapshots(),
-            builder: (context, snapshot) {
+            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(
                   child: CircularProgressIndicator(),
                 );
               }
+
               final userListStream = snapshot.data.docs.map((user) {
                 return MUser.fromDocument(user);
               }).where((user) {
                 print(user.displayName);
+
                 return (user.uid == FirebaseAuth.instance.currentUser.uid);
               }).toList(); //[user]
+
               MUser curUser = userListStream[0];
 
               return Column(
@@ -70,6 +69,8 @@ class MainScreenPage extends StatelessWidget {
                         showDialog(
                           context: context,
                           builder: (context) {
+                            // return createProfileMobile(context, userListStream,
+                            //     FirebaseAuth.instance.currentUser, null);
                             return createProfileDialog(context, curUser);
                           },
                         );

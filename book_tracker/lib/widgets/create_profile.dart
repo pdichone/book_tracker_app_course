@@ -1,5 +1,7 @@
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
+import 'package:book_tracker/widgets/update_user_profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
@@ -52,77 +54,12 @@ Widget createProfileDialog(BuildContext context, MUser curUser) {
                 showDialog(
                   context: context,
                   builder: (context) {
-                    return AlertDialog(
-                      title: Center(
-                        child: Text('Edit ${curUser.displayName}'),
-                      ),
-                      content: Form(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  backgroundImage: NetworkImage(
-                                      curUser.avatarUrl != null
-                                          ? curUser.avatarUrl
-                                          : 'https://i.pravatar.cc/300'),
-                                  radius: 50,
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: _displayNameTextController,
-                                  decoration: buildInputDecoration(
-                                      label: 'Your name', hintText: ''),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: _profesionTextController,
-                                  decoration: buildInputDecoration(
-                                      label: 'Profession', hintText: ''),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: _quoteTextController,
-                                  decoration: buildInputDecoration(
-                                      label: 'Favorite quote', hintText: ''),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: TextFormField(
-                                  controller: _avatarTextController,
-                                  decoration: buildInputDecoration(
-                                      label: 'Avatar url', hintText: ''),
-                                ),
-                              )
-                            ],
-                          ),
-                        ),
-                      ),
-                      actions: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextButton(
-                              onPressed: () {}, child: Text('Update')),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: TextButton(
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                              },
-                              child: Text('Cancel')),
-                        )
-                      ],
-                    );
+                    return UpdateUserProfile(
+                        user: curUser,
+                        displayNameTextController: _displayNameTextController,
+                        profesionTextController: _profesionTextController,
+                        quoteTextController: _quoteTextController,
+                        avatarTextController: _avatarTextController);
                   },
                 );
               },
