@@ -90,25 +90,23 @@ class UpdateUserProfile extends StatelessWidget {
 
                 final userChangedAvatar =
                     user.avatarUrl != _avatarTextController.text;
-
-                final userChangeProfession =
+                final userChangedProfession =
                     user.profession != _profesionTextController.text;
-
                 final userChangedQuote =
                     user.quote != _quoteTextController.text;
+
                 final userNeedUpdate = userChangedName ||
                     userChangedAvatar ||
-                    userChangeProfession ||
+                    userChangedProfession ||
                     userChangedQuote;
 
                 if (userNeedUpdate) {
-                 
-
+                  print('Updating...');
                   FirebaseFirestore.instance
                       .collection('users')
                       .doc(user.id)
                       .update(MUser(
-                              uid: user.uid, //was passing user.id!! hence giving me errors!! Something to watch for!
+                              uid: user.uid,
                               displayName: _displayNameTextController.text,
                               avatarUrl: _avatarTextController.text,
                               profession: _profesionTextController.text,

@@ -78,8 +78,9 @@ class MainScreenPage extends StatelessWidget {
                     ),
                   ),
                   Text(
-                    '${curUser.displayName}',
-                    style: TextStyle(color: Colors.black12),
+                    curUser.displayName.toUpperCase(),
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(color: Colors.black),
                   )
                 ],
               );

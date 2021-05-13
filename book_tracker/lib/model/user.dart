@@ -29,10 +29,7 @@ class MUser {
     );
   }
 
-  @override
-  String toString() {
-    return "docId: $id, avatarUrl: $avatarUrl, name: $displayName, uid: $uid, profession: $profession, quote: $quote";
-  }
+ 
 
   Map<String, dynamic> toMap() {
     return {
