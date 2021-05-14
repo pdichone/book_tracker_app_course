@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/screens/login_page.dart';
+import 'package:book_tracker/widgets/book_search_page.dart';
 import 'package:book_tracker/widgets/create_profile.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -105,43 +108,6 @@ class MainScreenPage extends StatelessWidget {
         },
         child: Icon(Icons.add),
         backgroundColor: Colors.redAccent,
-      ),
-    );
-  }
-}
-
-class BookSearchPage extends StatelessWidget {
-  final TextEditingController _searchTextController = TextEditingController();
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Book Search'),
-        backgroundColor: Colors.redAccent,
-      ),
-      body: Material(
-        elevation: 0.0,
-        child: Center(
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.9,
-            height: MediaQuery.of(context).size.height * 0.9,
-            child: Column(
-              children: [
-                Container(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Form(
-                        child: TextField(
-                      controller: _searchTextController,
-                      decoration: buildInputDecoration(
-                          label: 'Search', hintText: 'Flutter Development'),
-                    )),
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
       ),
     );
   }

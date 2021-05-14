@@ -3,16 +3,25 @@ class Book {
   final String title;
   final String author;
   final String notes;
+  final String photoUrl;
   final String categories;
+  final String publishedDate;
   final String description;
+  final int pageCount;
+  final String userId;
 
-  Book(
-      {this.id,
-      this.title,
-      this.author,
-      this.notes,
-      this.categories,
-      this.description});
+  Book({
+    this.id,
+    this.title,
+    this.author,
+    this.notes,
+    this.photoUrl,
+    this.categories,
+    this.publishedDate,
+    this.description,
+    this.pageCount,
+    this.userId,
+  });
 
   factory Book.fromMap(Map<String, dynamic> data) {
     return Book(
@@ -20,7 +29,11 @@ class Book {
         title: data['title'],
         author: data['author'],
         notes: data['notes'],
+        photoUrl: data['photo_url'],
         categories: data['categories'],
-        description: data['description']);
+        publishedDate: data['published_date'],
+        description: data['description'],
+        pageCount: data['page_count'],
+        userId: data['user_id']);
   }
 }
