@@ -3,10 +3,24 @@ import 'dart:convert';
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:flutter/material.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
-class BookSearchPage extends StatelessWidget {
-  final TextEditingController _searchTextController = TextEditingController();
+class BookSearchPage extends StatefulWidget {
+  @override
+  _BookSearchPageState createState() => _BookSearchPageState();
+}
+
+class _BookSearchPageState extends State<BookSearchPage> {
+  TextEditingController _searchTextController;
+
+  List<Book> listOfBooks = [];
+  @override
+  void initState() {
+    super.initState();
+    _searchTextController = TextEditingController();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,7 +49,27 @@ class BookSearchPage extends StatelessWidget {
                           label: 'Search', hintText: 'Flutter Development'),
                     )),
                   ),
-                )
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                (listOfBooks != null && listOfBooks.isNotEmpty)
+                    ? Row(
+                        children: [
+                          Expanded(
+                              child: SizedBox(
+                            width: 300,
+                            height: 200,
+                            child: ListView(
+                              scrollDirection: Axis.horizontal,
+                              children: createBookCards(listOfBooks, context),
+                            ),
+                          )),
+                        ],
+                      )
+                    : Center(
+                        child: Text('No books found!'),
+                      )
               ],
             ),
           ),
@@ -45,27 +79,20 @@ class BookSearchPage extends StatelessWidget {
   }
 
   void _search() async {
-    print('calling search...');
     await fetchBooks(_searchTextController.text).then((value) {
-      print('calling fetchBooks');
-      for (var item in value) {
-        print(item.author);
-      }
-      return null;
+      setState(() {
+        listOfBooks = value;
+      });
     }, onError: (val) {
       throw Exception('Failed to load books ${val.toString()}');
     });
   }
 
-// var escapeJSON = function(str) {
-//     return str.replace('/\\/g',"\\");
-// };
   Future<List<Book>> fetchBooks(String query) async {
     List<Book> books = [];
     http.Response response = await http
         .get(Uri.parse('https://www.googleapis.com/books/v1/volumes?q=$query'));
 
-    print('$query');
     if (response.statusCode == 200) {
       var body = jsonDecode(response.body);
       final Iterable list = body['items'];
@@ -107,5 +134,37 @@ class BookSearchPage extends StatelessWidget {
       throw ('error ${response.reasonPhrase}');
     }
     return books;
+  }
+
+  List<Widget> createBookCards(List<Book> books, BuildContext context) {
+    List<Widget> children = [];
+    for (var book in books) {
+      children.add(Container(
+        width: 160,
+        margin: const EdgeInsets.symmetric(horizontal: 12.0),
+        decoration:
+            BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
+        child: Card(
+          elevation: 5,
+          color: HexColor('#f6f4ff'),
+          child: Wrap(
+            children: [
+              Image.network(
+                (book.photoUrl == null || book.photoUrl.isEmpty)
+                    ? 'https://images.unsplash.com/photo-1553729784-e91953dec042?ixlib=rb-1.2.1&ixid=MXwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHw%3D&auto=format&fit=crop&w=1950&q=80'
+                    : book.photoUrl,
+                height: 100,
+                width: 160,
+              ),
+              ListTile(
+                title: Text(book.title),
+                subtitle: Text(book.author),
+              )
+            ],
+          ),
+        ),
+      ));
+    }
+    return children;
   }
 }
