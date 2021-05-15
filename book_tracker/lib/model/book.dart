@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Book {
   final String id;
   final String title;
@@ -23,17 +25,31 @@ class Book {
     this.userId,
   });
 
-  factory Book.fromMap(Map<String, dynamic> data) {
+  factory Book.fromDocument(QueryDocumentSnapshot data) {
+    Map<String, dynamic> info = data.data();
     return Book(
-        id: data['id'],
-        title: data['title'],
-        author: data['author'],
-        notes: data['notes'],
-        photoUrl: data['photo_url'],
-        categories: data['categories'],
-        publishedDate: data['published_date'],
-        description: data['description'],
-        pageCount: data['page_count'],
-        userId: data['user_id']);
+        id: data.id,
+        title: info['title'],
+        author: info['author'],
+        notes: info['notes'],
+        photoUrl: info['photo_url'],
+        categories: info['categories'],
+        publishedDate: info['published_date'],
+        description: info['description'],
+        pageCount: info['page_count'],
+        userId: info['user_id']);
+  }
+  Map<String, dynamic> toMap() {
+    return {
+      'title': title,
+      'user_id': userId,
+      'author': author,
+      'notes': notes,
+      'photo_url': photoUrl,
+      'published_date': publishedDate,
+      'description': description,
+      'page_count': pageCount,
+      'categories': categories,
+    };
   }
 }

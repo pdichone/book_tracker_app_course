@@ -2,6 +2,9 @@ import 'dart:convert';
 
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
+import 'package:book_tracker/widgets/searched_book_detail_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
@@ -53,8 +56,10 @@ class _BookSearchPageState extends State<BookSearchPage> {
                 SizedBox(
                   height: 12,
                 ),
-                (listOfBooks != null && listOfBooks.isNotEmpty)
+                (listOfBooks != null)
                     ? Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Expanded(
                               child: SizedBox(
@@ -68,7 +73,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
                         ],
                       )
                     : Center(
-                        child: Text('No books found!'),
+                        child: Text(''),
                       )
               ],
             ),
@@ -138,6 +143,8 @@ class _BookSearchPageState extends State<BookSearchPage> {
 
   List<Widget> createBookCards(List<Book> books, BuildContext context) {
     List<Widget> children = [];
+    final _bookCollectionReference =
+        FirebaseFirestore.instance.collection('books');
     for (var book in books) {
       children.add(Container(
         width: 160,
@@ -157,8 +164,25 @@ class _BookSearchPageState extends State<BookSearchPage> {
                 width: 160,
               ),
               ListTile(
-                title: Text(book.title),
-                subtitle: Text(book.author),
+                title: Text(
+                  book.title,
+                  style: TextStyle(color: HexColor('#5d48b6')),
+                  overflow: TextOverflow.ellipsis,
+                ),
+                subtitle: Text(
+                  book.author,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                onTap: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) {
+                      return SearchdBookDetailDialog(
+                          book: book,
+                          bookCollectionReference: _bookCollectionReference);
+                    },
+                  );
+                },
               )
             ],
           ),
