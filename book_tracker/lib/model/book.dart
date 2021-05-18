@@ -8,8 +8,11 @@ class Book {
   final String photoUrl;
   final String categories;
   final String publishedDate;
+  final double rating;
   final String description;
   final int pageCount;
+  final Timestamp startedReading;
+  final Timestamp finishedReading;
   final String userId;
 
   Book({
@@ -20,8 +23,11 @@ class Book {
     this.photoUrl,
     this.categories,
     this.publishedDate,
+    this.rating,
     this.description,
     this.pageCount,
+    this.startedReading,
+    this.finishedReading,
     this.userId,
   });
 
@@ -35,8 +41,11 @@ class Book {
         photoUrl: info['photo_url'],
         categories: info['categories'],
         publishedDate: info['published_date'],
+        rating: (info['rating'] as num) as double,
         description: info['description'],
         pageCount: info['page_count'],
+        startedReading: info['started_reading_at'],
+        finishedReading: info['finished_reading_at'],
         userId: info['user_id']);
   }
   Map<String, dynamic> toMap() {
@@ -47,8 +56,11 @@ class Book {
       'notes': notes,
       'photo_url': photoUrl,
       'published_date': publishedDate,
+      'rating': rating,
       'description': description,
       'page_count': pageCount,
+      'started_reading_at': startedReading,
+      'finished_reading_at': finishedReading,
       'categories': categories,
     };
   }

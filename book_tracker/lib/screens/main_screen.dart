@@ -4,10 +4,12 @@ import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
 import 'package:book_tracker/screens/login_page.dart';
+import 'package:book_tracker/widgets/book_details_dialog.dart';
 import 'package:book_tracker/widgets/book_search_page.dart';
 import 'package:book_tracker/widgets/create_profile.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:book_tracker/widgets/reading_list_card.dart';
+import 'package:book_tracker/widgets/two_sided_roundbutton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -140,7 +142,9 @@ class MainScreenPage extends StatelessWidget {
                   snapshot.data.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
-                return (book.userId == FirebaseAuth.instance.currentUser.uid);
+                return (book.userId == FirebaseAuth.instance.currentUser.uid) &&
+                    (book.finishedReading == null) &&
+                    (book.startedReading != null);
               }).toList();
 
               return Expanded(
@@ -154,7 +158,7 @@ class MainScreenPage extends StatelessWidget {
 
                           return InkWell(
                             child: ReadingListCard(
-                              rating: 5.0,
+                              rating: book.rating != null ? (book.rating) : 4.0,
                               buttonText: 'Reading',
                               title: book.title,
                               author: book.author,
@@ -164,37 +168,8 @@ class MainScreenPage extends StatelessWidget {
                               showDialog(
                                 context: context,
                                 builder: (context) {
-                                  return AlertDialog(
-                                    title: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            Spacer(),
-                                            Spacer(),
-                                            CircleAvatar(
-                                              backgroundColor:
-                                                  Colors.transparent,
-                                              backgroundImage:
-                                                  NetworkImage(book.photoUrl),
-                                              radius: 50,
-                                            ),
-                                            Spacer(),
-                                            Container(
-                                              margin: const EdgeInsets.only(
-                                                  bottom: 100),
-                                              child: TextButton.icon(
-                                                  onPressed: () =>
-                                                      Navigator.of(context)
-                                                          .pop(),
-                                                  icon: Icon(Icons.close),
-                                                  label: Text('')),
-                                            )
-                                          ],
-                                        ),
-                                        Text(book.author)
-                                      ],
-                                    ),
-                                    // TODO:add form here!
+                                  return BookDetailsDialog(
+                                    book: book,
                                   );
                                 },
                               );
@@ -243,7 +218,9 @@ class MainScreenPage extends StatelessWidget {
               var readingListListBook = snapshot.data.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
-                return (book.userId == FirebaseAuth.instance.currentUser.uid);
+                return (book.userId == FirebaseAuth.instance.currentUser.uid) &&
+                    (book.finishedReading == null) &&
+                    (book.startedReading == null);
               }).toList();
 
               return Expanded(
@@ -255,12 +232,20 @@ class MainScreenPage extends StatelessWidget {
                           itemBuilder: (context, index) {
                             Book book = readingListListBook[index];
 
-                            return ReadingListCard(
-                                buttonText: 'Not Started',
-                                rating: 4.3,
-                                author: book.author,
-                                image: book.photoUrl,
-                                title: book.title);
+                            return InkWell(
+                              child: ReadingListCard(
+                                  buttonText: 'Not Started',
+                                  rating:
+                                      book.rating != null ? (book.rating) : 4.0,
+                                  author: book.author,
+                                  image: book.photoUrl,
+                                  title: book.title),
+                              onTap: () => showDialog(
+                                context: context,
+                                builder: (context) =>
+                                    BookDetailsDialog(book: book),
+                              ),
+                            );
                           },
                         )
                       : Center(
