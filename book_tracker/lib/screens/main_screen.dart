@@ -21,6 +21,9 @@ class MainScreenPage extends StatelessWidget {
         FirebaseFirestore.instance.collection('users');
     CollectionReference bookCollectionReference =
         FirebaseFirestore.instance.collection('books');
+    List<Book> userBooksReadList = [];
+
+    int booksRead = 0;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white24,
@@ -74,7 +77,8 @@ class MainScreenPage extends StatelessWidget {
                           builder: (context) {
                             // return createProfileMobile(context, userListStream,
                             //     FirebaseAuth.instance.currentUser, null);
-                            return createProfileDialog(context, curUser);
+                            return createProfileDialog(
+                                context, curUser, userBooksReadList);
                           },
                         );
                       },
@@ -146,6 +150,15 @@ class MainScreenPage extends StatelessWidget {
                     (book.finishedReading == null) &&
                     (book.startedReading != null);
               }).toList();
+
+               userBooksReadList = snapshot.data.docs.map((book) {
+                return Book.fromDocument(book);
+              }).where((book) {
+                return (book.userId == FirebaseAuth.instance.currentUser.uid) &&
+                    (book.finishedReading != null) &&
+                    (book.startedReading != null);
+              }).toList();
+              booksRead = userBooksReadList.length;
 
               return Expanded(
                 flex: 1,

@@ -1,4 +1,6 @@
+import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
+import 'package:book_tracker/widgets/two_sided_roundbutton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +10,8 @@ class SearchdBookDetailDialog extends StatelessWidget {
     Key key,
     @required this.book,
     @required CollectionReference<Map<String, dynamic>> bookCollectionReference,
-  }) : _bookCollectionReference = bookCollectionReference, super(key: key);
+  })  : _bookCollectionReference = bookCollectionReference,
+        super(key: key);
 
   final Book book;
   final CollectionReference<Map<String, dynamic>> _bookCollectionReference;
@@ -53,17 +56,14 @@ class SearchdBookDetailDialog extends StatelessWidget {
               child: Container(
             margin: const EdgeInsets.all(18),
             decoration: BoxDecoration(
-                border: Border.all(
-                    color: Colors.blueGrey.shade100,
-                    width: 1)),
+                border: Border.all(color: Colors.blueGrey.shade100, width: 1)),
             child: SingleChildScrollView(
               scrollDirection: Axis.vertical,
               child: Padding(
                 padding: const EdgeInsets.all(18.0),
                 child: Text(
                   book.description,
-                  style: TextStyle(
-                      wordSpacing: 0.9, letterSpacing: 1.5),
+                  style: TextStyle(wordSpacing: 0.9, letterSpacing: 1.5),
                 ),
               ),
             ),
@@ -72,12 +72,14 @@ class SearchdBookDetailDialog extends StatelessWidget {
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextButton(
-              onPressed: () {
+            padding: const EdgeInsets.all(8.0),
+            child: TwoSidedRoundeButton(
+              radius: 30,
+              color: kButtonColor,
+              text: 'Save',
+              press: () {
                 _bookCollectionReference.add(Book(
-                        userId: FirebaseAuth
-                            .instance.currentUser.uid,
+                        userId: FirebaseAuth.instance.currentUser.uid,
                         title: book.title,
                         author: book.author,
                         photoUrl: book.photoUrl,
@@ -88,16 +90,17 @@ class SearchdBookDetailDialog extends StatelessWidget {
                     .toMap());
                 Navigator.of(context).pop();
               },
-              child: Text('Save')),
-        ),
+            )),
         Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextButton(
-              onPressed: () {
+            padding: const EdgeInsets.all(8.0),
+            child: TwoSidedRoundeButton(
+              radius: 30,
+              color: kButtonColor,
+              text: 'Cancel',
+              press: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel')),
-        )
+            ))
       ],
     );
   }

@@ -1,11 +1,14 @@
+import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
+import 'package:book_tracker/util/util.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:book_tracker/widgets/update_user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hexcolor/hexcolor.dart';
 
-Widget createProfileDialog(BuildContext context, MUser curUser) {
+Widget createProfileDialog(
+    BuildContext context, MUser curUser, List<Book> bookList) {
   final TextEditingController _displayNameTextController =
       TextEditingController(text: curUser.displayName);
   final TextEditingController _profesionTextController =
@@ -33,7 +36,7 @@ Widget createProfileDialog(BuildContext context, MUser curUser) {
           ],
         ),
         Text(
-          'Books Read',
+          'Books Read (${bookList.length})',
           style: Theme.of(context)
               .textTheme
               .bodyText1
@@ -123,6 +126,33 @@ Widget createProfileDialog(BuildContext context, MUser curUser) {
                   ),
                 )
               ],
+            ),
+          ),
+        ),
+        Expanded(
+          child: Container(
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: ListView.builder(
+              itemCount: bookList.length,
+              itemBuilder: (context, index) {
+                Book book = bookList[index];
+                return Card(
+                  elevation: 2.0,
+                  child: Column(
+                    children: [
+                      ListTile(
+                        title: Text('${book.title}'),
+                        leading: CircleAvatar(
+                          radius: 35,
+                          backgroundImage: NetworkImage(book.photoUrl),
+                        ),
+                        subtitle: Text('${book.author}'),
+                      ),
+                      Text('Finished on: ${formatDate(book.finishedReading)}')
+                    ],
+                  ),
+                );
+              },
             ),
           ),
         )

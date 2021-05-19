@@ -24,10 +24,17 @@ class BookDetailsDialog extends StatefulWidget {
 class _BookDetailsDialogState extends State<BookDetailsDialog> {
   bool isReadingClicked = false;
   bool isFinishedReadingClicked = false;
+  TextEditingController _notestTextController;
 
   double _rating;
   final _bookCollectionReference =
       FirebaseFirestore.instance.collection('books');
+
+  @override
+  void initState() {
+    _notestTextController = TextEditingController(text: widget.book.notes);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,8 +44,9 @@ class _BookDetailsDialogState extends State<BookDetailsDialog> {
         TextEditingController(text: widget.book.author);
     TextEditingController _photoTextController =
         TextEditingController(text: widget.book.photoUrl);
-    TextEditingController _notestTextController =
-        TextEditingController(text: widget.book.notes);
+
+    // TextEditingController _notestTextController =
+    //     TextEditingController(text: widget.book.notes);
 
     return AlertDialog(
       title: Column(
