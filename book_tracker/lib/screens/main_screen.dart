@@ -13,6 +13,7 @@ import 'package:book_tracker/widgets/two_sided_roundbutton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MainScreenPage extends StatelessWidget {
   @override
@@ -23,7 +24,8 @@ class MainScreenPage extends StatelessWidget {
         FirebaseFirestore.instance.collection('books');
     List<Book> userBooksReadList = [];
 
-    int booksRead = 0;
+    var authUser = Provider.of<User>(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white24,
@@ -52,7 +54,7 @@ class MainScreenPage extends StatelessWidget {
               final userListStream = snapshot.data.docs.map((user) {
                 return MUser.fromDocument(user);
               }).where((user) {
-                return (user.uid == FirebaseAuth.instance.currentUser.uid);
+                return (user.uid == authUser.uid); 
               }).toList(); //[user]
 
               MUser curUser = userListStream[0];
@@ -146,19 +148,19 @@ class MainScreenPage extends StatelessWidget {
                   snapshot.data.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
-                return (book.userId == FirebaseAuth.instance.currentUser.uid) &&
+                return (book.userId == authUser.uid) &&
                     (book.finishedReading == null) &&
                     (book.startedReading != null);
               }).toList();
 
-               userBooksReadList = snapshot.data.docs.map((book) {
+              userBooksReadList = snapshot.data.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
-                return (book.userId == FirebaseAuth.instance.currentUser.uid) &&
+                return (book.userId == authUser.uid) &&
                     (book.finishedReading != null) &&
                     (book.startedReading != null);
               }).toList();
-              booksRead = userBooksReadList.length;
+              //  booksRead = userBooksReadList.length;
 
               return Expanded(
                 flex: 1,
@@ -231,7 +233,7 @@ class MainScreenPage extends StatelessWidget {
               var readingListListBook = snapshot.data.docs.map((book) {
                 return Book.fromDocument(book);
               }).where((book) {
-                return (book.userId == FirebaseAuth.instance.currentUser.uid) &&
+                return (book.userId == authUser.uid) &&
                     (book.finishedReading == null) &&
                     (book.startedReading == null);
               }).toList();

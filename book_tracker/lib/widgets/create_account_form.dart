@@ -81,6 +81,16 @@ class CreateAccountForm extends StatelessWidget {
                             MaterialPageRoute(
                               builder: (context) => MainScreenPage(),
                             ));
+                      }).catchError((onError) {
+                        return showDialog(
+                          context: context,
+                          builder: (context) {
+                            return AlertDialog(
+                              title: Text('Oops!'),
+                              content: Text('${onError.message}'),
+                            );
+                          },
+                        );
                       });
                     });
                   }

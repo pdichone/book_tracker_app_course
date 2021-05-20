@@ -20,6 +20,7 @@ class LoginForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    GlobalKey _scaffold = GlobalKey();
     return Form(
       key: _formKey,
       child: Column(children: [
