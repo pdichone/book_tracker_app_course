@@ -34,6 +34,10 @@ class MainScreenPage extends StatelessWidget {
         centerTitle: false,
         title: Row(
           children: [
+            Image.asset(
+              'assets/images/Icon-76.png',
+              scale: 2,
+            ),
             Text(
               'A.Reader',
               style: Theme.of(context).textTheme.headline6.copyWith(
@@ -54,7 +58,7 @@ class MainScreenPage extends StatelessWidget {
               final userListStream = snapshot.data.docs.map((user) {
                 return MUser.fromDocument(user);
               }).where((user) {
-                return (user.uid == authUser.uid); 
+                return (user.uid == authUser.uid);
               }).toList(); //[user]
 
               MUser curUser = userListStream[0];
