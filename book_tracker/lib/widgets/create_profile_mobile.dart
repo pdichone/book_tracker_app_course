@@ -7,7 +7,7 @@ import 'package:book_tracker/widgets/update_user_profile.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
+
 
 Widget createProfileMobile(
     BuildContext context, List<MUser> list, User authUser, int booksRead) {
@@ -127,7 +127,7 @@ Widget createProfileMobile(
                       width: 1,
                       color: Colors.blueGrey.shade100,
                     ),
-                    color: HexColor('#f1f3f6'),
+                    color: Color(0xfff1f3f6),
                     borderRadius: BorderRadius.all(
                       Radius.circular(4),
                     )),

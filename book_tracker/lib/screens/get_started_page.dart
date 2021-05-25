@@ -4,14 +4,13 @@ import 'package:book_tracker/screens/login_page.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:book_tracker/widgets/login_form.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class GetStartedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Material(
       child: CircleAvatar(
-        backgroundColor: HexColor('#f5f6f8'),
+        backgroundColor: Color(0xfff5f6f8),
         child: Column(children: [
           Spacer(),
           Text(
@@ -32,7 +31,7 @@ class GetStartedPage extends StatelessWidget {
           TextButton.icon(
               style: TextButton.styleFrom(
                   primary: Colors.white,
-                  backgroundColor: HexColor('#69639f'),
+                  backgroundColor: Color(0xff69639f),
                   textStyle: TextStyle(fontSize: 18)),
               onPressed: () {
                 Navigator.push(

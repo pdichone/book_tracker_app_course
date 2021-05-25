@@ -5,7 +5,7 @@ import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:book_tracker/widgets/update_user_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
+
 
 Widget createProfileDialog(
     BuildContext context, MUser curUser, List<Book> bookList) {
@@ -94,7 +94,7 @@ Widget createProfileDialog(
         Container(
           decoration: BoxDecoration(
               border: Border.all(width: 1, color: Colors.blueGrey.shade100),
-              color: HexColor('#f1f3f6'),
+              color: Color(0xfff1f3f6),
               borderRadius: BorderRadius.all(Radius.circular(4))),
           child: SingleChildScrollView(
             scrollDirection: Axis.vertical,

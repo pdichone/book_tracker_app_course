@@ -1,3 +1,4 @@
+import 'package:book_tracker/constants/constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class Book {
@@ -41,7 +42,8 @@ class Book {
         photoUrl: info['photo_url'],
         categories: info['categories'],
         publishedDate: info['published_date'],
-        rating: (info['rating'] as num) as double,
+        rating: parseDouble(info['rating']),
+       // rating: (info['rating'] as num) as double,
         description: info['description'],
         pageCount: info['page_count'],
         startedReading: info['started_reading_at'],

@@ -6,7 +6,6 @@ import 'package:book_tracker/widgets/searched_book_detail_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 
 class BookSearchPage extends StatefulWidget {
@@ -153,7 +152,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
             BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(5))),
         child: Card(
           elevation: 5,
-          color: HexColor('#f6f4ff'),
+          color: Color(0xfff6f4ff),
           child: Wrap(
             children: [
               Image.network(
@@ -166,7 +165,7 @@ class _BookSearchPageState extends State<BookSearchPage> {
               ListTile(
                 title: Text(
                   book.title,
-                  style: TextStyle(color: HexColor('#5d48b6')),
+                  style: TextStyle(color: Color(0xff5d48b6)),
                   overflow: TextOverflow.ellipsis,
                 ),
                 subtitle: Text(

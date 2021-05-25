@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
+
 
 InputDecoration buildInputDecoration({String label, String hintText}) {
   return InputDecoration(
@@ -9,7 +9,7 @@ InputDecoration buildInputDecoration({String label, String hintText}) {
           borderSide: BorderSide(color: Colors.blue)),
       enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(25),
-          borderSide: BorderSide(color: HexColor('#69639F'), width: 2.0)),
+          borderSide: BorderSide(color: Color(0xff69639F), width: 2.0)),
       labelText: label,
       hintText: hintText);
 }

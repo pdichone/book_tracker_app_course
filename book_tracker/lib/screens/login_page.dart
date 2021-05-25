@@ -1,7 +1,6 @@
 import 'package:book_tracker/widgets/create_account_form.dart';
 import 'package:book_tracker/widgets/login_form.dart';
 import 'package:flutter/material.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -24,7 +23,7 @@ class _LoginPageState extends State<LoginPage> {
           Expanded(
               flex: 2,
               child: Container(
-                color: HexColor('#b9c2d1'),
+                color: Color(0xffb9c2d1),
               )),
           Text(
             'Sign In',
@@ -50,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
               TextButton.icon(
                   icon: Icon(Icons.portrait_rounded),
                   style: TextButton.styleFrom(
-                      primary: HexColor('#fd5b28'),
+                      primary: Color(0xfffd5b28),
                       textStyle:
                           TextStyle(fontSize: 18, fontStyle: FontStyle.italic)),
                   onPressed: () {
@@ -69,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
           Expanded(
               flex: 2,
               child: Container(
-                color: HexColor('#b9c2d1'),
+                color: Color(0xffb9c2d1),
               ))
         ],
       )),
