@@ -33,22 +33,41 @@ class Book {
   });
 
   factory Book.fromDocument(QueryDocumentSnapshot data) {
-    Map<String, dynamic> info = data.data();
+    //Map<String, dynamic> info = data.data();
+    /*
+      Newer firestore sdk versions allow for
+      using data.get('pass_field_name')
+    */
     return Book(
         id: data.id,
-        title: info['title'],
-        author: info['author'],
-        notes: info['notes'],
-        photoUrl: info['photo_url'],
-        categories: info['categories'],
-        publishedDate: info['published_date'],
-        rating: parseDouble(info['rating']),
-       // rating: (info['rating'] as num) as double,
-        description: info['description'],
-        pageCount: info['page_count'],
-        startedReading: info['started_reading_at'],
-        finishedReading: info['finished_reading_at'],
-        userId: info['user_id']);
+        title: data.get('title'),
+        author: data.get('author'),
+        notes: data.get('notes'),
+        photoUrl: data.get('photo_url'),
+        categories: data.get('categories'),
+        publishedDate: data.get('published_date'),
+        rating: parseDouble(data.get('rating')),
+        description: data.get('description'),
+        pageCount: data.get('page_count'),
+        startedReading: data.get('started_reading_at'),
+        finishedReading: data.get('finished_reading_at'),
+        userId: data.get('user_id')
+
+        //  title: info['title'],
+        // author: info['author'],
+        // notes: info['notes'],
+        // photoUrl: info['photo_url'],
+        // categories: info['categories'],
+        // publishedDate: info['published_date'],
+        // rating: parseDouble(info['rating']),
+
+        // description: info['description'],
+        // pageCount: info['page_count'],
+        // startedReading: info['started_reading_at'],
+        // finishedReading: info['finished_reading_at'],
+        // userId: info['user_id']
+
+        );
   }
   Map<String, dynamic> toMap() {
     return {
