@@ -3,19 +3,25 @@ import 'dart:convert';
 import 'package:book_tracker/constants/constants.dart';
 import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
+import 'package:book_tracker/screens/get_started_page.dart';
 import 'package:book_tracker/screens/login_page.dart';
 import 'package:book_tracker/widgets/book_details_dialog.dart';
 import 'package:book_tracker/widgets/book_search_page.dart';
 import 'package:book_tracker/widgets/create_profile.dart';
-import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:book_tracker/widgets/reading_list_card.dart';
-import 'package:book_tracker/widgets/two_sided_roundbutton.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-class MainScreenPage extends StatelessWidget {
+class MainScreenPage extends StatefulWidget {
+  @override
+  _MainScreenPageState createState() => _MainScreenPageState();
+}
+
+class _MainScreenPageState extends State<MainScreenPage> {
+  var mainUid;
+
   @override
   Widget build(BuildContext context) {
     CollectionReference userCollectionReference =
@@ -46,67 +52,72 @@ class MainScreenPage extends StatelessWidget {
           ],
         ),
         actions: [
-          StreamBuilder<QuerySnapshot>(
-            stream: userCollectionReference.snapshots(),
-            builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
+          (authUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: userCollectionReference.snapshots(),
+                  builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    }
 
-              final userListStream = snapshot.data.docs.map((user) {
-                return MUser.fromDocument(user);
-              }).where((user) {
-                return (user.uid == authUser.uid);
-              }).toList(); //[user]
+                    final userListStream = snapshot.data.docs.map((user) {
+                      return MUser.fromDocument(user);
+                    }).where((user) {
+                      return (user.uid == authUser.uid);
+                    }).toList(); //[user]
 
-              MUser curUser = userListStream[0];
+                    MUser curUser = userListStream[0];
 
-              return Column(
-                children: [
-                  SizedBox(
-                    height: 40,
-                    width: 40,
-                    child: InkWell(
-                      child: CircleAvatar(
-                        radius: 60,
-                        backgroundImage: NetworkImage(curUser.avatarUrl != null
-                            ? curUser.avatarUrl
-                            : 'https://i.pravatar.cc/300'),
-                        backgroundColor: Colors.white,
-                        child: Text(''),
-                      ),
-                      onTap: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) {
-                            // return createProfileMobile(context, userListStream,
-                            //     FirebaseAuth.instance.currentUser, null);
-                            return createProfileDialog(
-                                context, curUser, userBooksReadList);
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  Text(
-                    curUser.displayName.toUpperCase(),
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(color: Colors.black),
-                  )
-                ],
-              );
-            },
-          ),
+                    return Column(
+                      children: [
+                        SizedBox(
+                          height: 40,
+                          width: 40,
+                          child: InkWell(
+                            child: CircleAvatar(
+                              radius: 60,
+                              backgroundImage: NetworkImage(
+                                  curUser.avatarUrl != null
+                                      ? curUser.avatarUrl
+                                      : 'https://i.pravatar.cc/300'),
+                              backgroundColor: Colors.white,
+                              child: Text(''),
+                            ),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) {
+                                  // return createProfileMobile(context, userListStream,
+                                  //     FirebaseAuth.instance.currentUser, null);
+                                  return createProfileDialog(
+                                      context, curUser, userBooksReadList);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                        Text(
+                          curUser.displayName.toUpperCase(),
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(color: Colors.black),
+                        )
+                      ],
+                    );
+                  },
+                )
+              : Container(),
           TextButton.icon(
-              onPressed: () {
-                FirebaseAuth.instance.signOut().then((value) {
+              onPressed: () async {
+                await FirebaseAuth.instance.signOut().then((value) {
                   return Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => LoginPage(),
                       ));
+                }, onError: (error) {
+                  print(error.toString());
                 });
               },
               icon: Icon(Icons.logout),
@@ -142,70 +153,75 @@ class MainScreenPage extends StatelessWidget {
           SizedBox(
             height: 10,
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: bookCollectionReference.snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              var userBookFilteredReadListStream =
-                  snapshot.data.docs.map((book) {
-                return Book.fromDocument(book);
-              }).where((book) {
-                return (book.userId == authUser.uid) &&
-                    (book.finishedReading == null) &&
-                    (book.startedReading != null);
-              }).toList();
+          (authUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: bookCollectionReference.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    var userBookFilteredReadListStream =
+                        snapshot.data.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      return (book.userId == authUser.uid) &&
+                          (book.finishedReading == null) &&
+                          (book.startedReading != null);
+                    }).toList();
 
-              userBooksReadList = snapshot.data.docs.map((book) {
-                return Book.fromDocument(book);
-              }).where((book) {
-                return (book.userId == authUser.uid) &&
-                    (book.finishedReading != null) &&
-                    (book.startedReading != null);
-              }).toList();
-              //  booksRead = userBooksReadList.length;
+                    userBooksReadList = snapshot.data.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      return (book.userId == authUser.uid) &&
+                          (book.finishedReading != null) &&
+                          (book.startedReading != null);
+                    }).toList();
+                    //  booksRead = userBooksReadList.length;
 
-              return Expanded(
-                flex: 1,
-                child: (userBookFilteredReadListStream.length > 0)
-                    ? ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: userBookFilteredReadListStream.length,
-                        itemBuilder: (context, index) {
-                          Book book = userBookFilteredReadListStream[index];
+                    return Expanded(
+                      flex: 1,
+                      child: (userBookFilteredReadListStream.length > 0)
+                          ? ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: userBookFilteredReadListStream.length,
+                              itemBuilder: (context, index) {
+                                Book book =
+                                    userBookFilteredReadListStream[index];
 
-                          return InkWell(
-                            child: ReadingListCard(
-                              rating: book.rating != null ? (book.rating) : 4.0,
-                              buttonText: 'Reading',
-                              title: book.title,
-                              author: book.author,
-                              image: book.photoUrl,
-                            ),
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return BookDetailsDialog(
-                                    book: book,
-                                  );
-                                },
-                              );
-                            },
-                          );
-                        },
-                      )
-                    : Center(
-                        child: Text(
-                            'You haven\'t started reading. \nStart by adding a book.',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ))),
-              );
-            },
-          ),
+                                return InkWell(
+                                  child: ReadingListCard(
+                                    rating: book.rating != null
+                                        ? (book.rating)
+                                        : 4.0,
+                                    buttonText: 'Reading',
+                                    title: book.title,
+                                    author: book.author,
+                                    image: book.photoUrl,
+                                  ),
+                                  onTap: () {
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) {
+                                        return BookDetailsDialog(
+                                          book: book,
+                                        );
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            )
+                          : Center(
+                              child: Text(
+                                  'You haven\'t started reading. \nStart by adding a book.',
+                                  style: TextStyle(
+                                    fontSize: 18,
+                                    fontWeight: FontWeight.bold,
+                                  ))),
+                    );
+                  },
+                )
+              : Container(),
           Container(
               width: double.infinity,
               child: Column(
@@ -228,53 +244,56 @@ class MainScreenPage extends StatelessWidget {
           SizedBox(
             height: 8,
           ),
-          StreamBuilder<QuerySnapshot>(
-            stream: bookCollectionReference.snapshots(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return CircularProgressIndicator();
-              }
-              var readingListListBook = snapshot.data.docs.map((book) {
-                return Book.fromDocument(book);
-              }).where((book) {
-                return (book.userId == authUser.uid) &&
-                    (book.finishedReading == null) &&
-                    (book.startedReading == null);
-              }).toList();
+          (authUser != null)
+              ? StreamBuilder<QuerySnapshot>(
+                  stream: bookCollectionReference.snapshots(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    }
+                    var readingListListBook = snapshot.data.docs.map((book) {
+                      return Book.fromDocument(book);
+                    }).where((book) {
+                      return (book.userId == authUser.uid) &&
+                          (book.finishedReading == null) &&
+                          (book.startedReading == null);
+                    }).toList();
 
-              return Expanded(
-                  flex: 1,
-                  child: (readingListListBook.length > 0)
-                      ? ListView.builder(
-                          scrollDirection: Axis.horizontal,
-                          itemCount: readingListListBook.length,
-                          itemBuilder: (context, index) {
-                            Book book = readingListListBook[index];
+                    return Expanded(
+                        flex: 1,
+                        child: (readingListListBook.length > 0)
+                            ? ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: readingListListBook.length,
+                                itemBuilder: (context, index) {
+                                  Book book = readingListListBook[index];
 
-                            return InkWell(
-                              child: ReadingListCard(
-                                  buttonText: 'Not Started',
-                                  rating:
-                                      book.rating != null ? (book.rating) : 4.0,
-                                  author: book.author,
-                                  image: book.photoUrl,
-                                  title: book.title),
-                              onTap: () => showDialog(
-                                context: context,
-                                builder: (context) =>
-                                    BookDetailsDialog(book: book),
-                              ),
-                            );
-                          },
-                        )
-                      : Center(
-                          child: Text('No books found. Add a book :)',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
-                              ))));
-            },
-          )
+                                  return InkWell(
+                                    child: ReadingListCard(
+                                        buttonText: 'Not Started',
+                                        rating: book.rating != null
+                                            ? (book.rating)
+                                            : 4.0,
+                                        author: book.author,
+                                        image: book.photoUrl,
+                                        title: book.title),
+                                    onTap: () => showDialog(
+                                      context: context,
+                                      builder: (context) =>
+                                          BookDetailsDialog(book: book),
+                                    ),
+                                  );
+                                },
+                              )
+                            : Center(
+                                child: Text('No books found. Add a book :)',
+                                    style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                    ))));
+                  },
+                )
+              : Container()
         ],
       ),
     );

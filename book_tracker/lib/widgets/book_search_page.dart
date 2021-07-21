@@ -4,7 +4,6 @@ import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/widgets/input_decoration.dart';
 import 'package:book_tracker/widgets/searched_book_detail_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 

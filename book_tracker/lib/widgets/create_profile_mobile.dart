@@ -1,13 +1,10 @@
 import 'dart:ui';
 
-import 'package:book_tracker/model/book.dart';
 import 'package:book_tracker/model/user.dart';
 
 import 'package:book_tracker/widgets/update_user_profile.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 
 Widget createProfileMobile(
     BuildContext context, List<MUser> list, User authUser, int booksRead) {
@@ -22,7 +19,7 @@ Widget createProfileMobile(
 
   Widget widget;
 
-  CollectionReference books = FirebaseFirestore.instance.collection('books');
+  //CollectionReference books = FirebaseFirestore.instance.collection('books');
 
   for (var user in list) {
     widget = Container(

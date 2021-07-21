@@ -2,10 +2,13 @@ import 'package:book_tracker/screens/get_started_page.dart';
 import 'package:book_tracker/screens/login_page.dart';
 import 'package:book_tracker/screens/main_screen.dart';
 import 'package:book_tracker/screens/page_not_found.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
+import 'model/book.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -35,7 +38,7 @@ class MyApp extends StatelessWidget {
         //   '/main': (context) => MainScreenPage(),
         //   '/login': (context) => LoginPage()
         // },
-        //home: LoginPage()
+        //home: TesterApp(),
         initialRoute: '/',
         onGenerateRoute: (settings) {
           print(settings.name);
@@ -54,6 +57,44 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
+  }
+}
+
+class TesterApp extends StatelessWidget {
+  const TesterApp({Key key}) : super(key: key);
+
+  Widget build(BuildContext context) {
+    CollectionReference booksCollection =
+        FirebaseFirestore.instance.collection('books');
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('Main Page'),
+        ),
+        body: Center(
+          child: StreamBuilder<QuerySnapshot>(
+            stream: booksCollection.snapshots(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              final bookListStream = snapshot.data.docs.map((book) {
+                return Book.fromDocument(book);
+              }).toList();
+
+              for (var item in bookListStream) {
+                print(item.notes);
+              }
+              return ListView.builder(
+                itemCount: bookListStream.length,
+                itemBuilder: (context, index) {
+                  return Text(bookListStream[index].author);
+                },
+              );
+            },
+          ),
+        ));
   }
 }
 

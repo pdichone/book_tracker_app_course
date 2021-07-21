@@ -1,8 +1,6 @@
 import 'dart:ui';
 
 import 'package:book_tracker/screens/login_page.dart';
-import 'package:book_tracker/widgets/input_decoration.dart';
-import 'package:book_tracker/widgets/login_form.dart';
 import 'package:flutter/material.dart';
 
 class GetStartedPage extends StatelessWidget {
