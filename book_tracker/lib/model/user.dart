@@ -18,7 +18,6 @@ class MUser {
       this.avatarUrl});
 
   factory MUser.fromDocument(QueryDocumentSnapshot data) {
-    //Map<String, dynamic> info = data.data();
     return MUser(
       id: data.id,
       uid: data.get('uid'),
