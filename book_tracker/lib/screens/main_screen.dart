@@ -20,7 +20,7 @@ class MainScreenPage extends StatefulWidget {
 }
 
 class _MainScreenPageState extends State<MainScreenPage> {
-  var mainUid;
+  
 
   @override
   Widget build(BuildContext context) {

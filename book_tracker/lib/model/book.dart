@@ -33,11 +33,7 @@ class Book {
   });
 
   factory Book.fromDocument(QueryDocumentSnapshot data) {
-    //Map<String, dynamic> info = data.data();
-    /*
-      Newer firestore sdk versions allow for
-      using data.get('pass_field_name')
-    */
+    
     return Book(
         id: data.id,
         title: data.get('title'),
